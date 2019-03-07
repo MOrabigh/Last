@@ -850,14 +850,14 @@ i=1000;
                 alert.setHeaderText(null);
                 alert.setContentText("Deleted Successfully");
                 alert.showAndWait();
-                return;
+                //return;
             }
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText(null);
             alert.setContentText(" Cannot delete or update a parent row: a foreign key constraint fails (`mo_db`.`maintenance_operation`, CONSTRAINT `maintenance_operation_ibfk_1` FOREIGN KEY (`EMPLOYEE_ID`) REFERENCES `employee` (`EMPLOYEE_ID`) ON DELETE NO ACTION)");
             alert.showAndWait();
-            return;
+            //return;
         }
 
     }
@@ -1045,14 +1045,14 @@ i=1000;
                 alert.setHeaderText(null);
                 alert.setContentText("Deleted Successfully");
                 alert.showAndWait();
-                return;
+                //return;
             }
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText(null);
             alert.setContentText("Cannot delete or update a parent row: a foreign key constraint fails (`mo_db`.`require`, CONSTRAINT `require_ibfk_2` FOREIGN KEY (`SP_NBER`) REFERENCES `spare_parts` (`SP_NBER`)) or Cannot delete or update a parent row: a foreign key constraint fails (`mo_db`.`attach`, CONSTRAINT `attach_ibfk_1` FOREIGN KEY (`SP_NBER`) REFERENCES `spare_parts` (`SP_NBER`))");
             alert.showAndWait();
-            return;
+            //return;
         }
 
     }

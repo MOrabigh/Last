@@ -19,6 +19,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -32,6 +33,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -48,6 +50,7 @@ import javafx.util.converter.DoubleStringConverter;
 import javax.swing.JOptionPane;
 
 public class Controller_AddMO implements Initializable {
+        Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
 
     ConnectionClass connectionClass = new ConnectionClass();
     // we call conneClass  that we make it up
@@ -112,7 +115,7 @@ public class Controller_AddMO implements Initializable {
     private TableColumn<Controller_AddMO.AddSP, Integer> Col_SPnum_AddSP_AddMO;
     @FXML
     private TableColumn<Controller_AddMO.AddSP, Double> Col_SPprice_AddSP_AddMO;
-       @FXML
+    @FXML
     private TableColumn<Controller_AddMO.AddSP, Double> Col_SPQuantity_AddSP_AddMO;
 
     ObservableList<Controller_AddMO.AddSP> list = FXCollections.observableArrayList();
@@ -139,10 +142,11 @@ public class Controller_AddMO implements Initializable {
     private JFXButton Btn_AddSP_AddMo;
     @FXML
     private JFXTextField Txfiled_SpPrice_AddMO;
- 
 
     @FXML
     private void M_Txfiled_SpSerialN_AddMO(ActionEvent event) throws SQLException {
+           alert2.setTitle(null);
+        alert2.setHeaderText(null);
         AllSP2 = Table_SelectedSP_AddMO.getItems();
         SPSelected2 = Table_SelectedSP_AddMO.getSelectionModel().getSelectedItems();
         //  SPSelected2.get(0).SP_SNProperty("");
@@ -164,12 +168,13 @@ public class Controller_AddMO implements Initializable {
             calculate();
             Txfiled_SpSerialN_AddMO.setText("الرقم التسلسلي");
             Txfiled_SpPrice_AddMO.setText("السعر");
-               String sqlupdatePrice = "UPDATE `maintenance_operation` SET `MO_COST` = "+Txfiled_MOCost_AddMO.getText()+", `SP_COST` = "+Txfiled_SPCost_AddMO.getText()+" WHERE `MO_NBER` = "+Txfiled_MOnum_AddMO.getText()+";";
-       
-         statement1.executeUpdate(sqlupdatePrice);
-         JOptionPane.showMessageDialog(null,"تم تعديل سعر قطعة الغيار", "Alert", JOptionPane.INFORMATION_MESSAGE);
+            String sqlupdatePrice = "UPDATE `maintenance_operation` SET `MO_COST` = " + Txfiled_MOCost_AddMO.getText() + ", `SP_COST` = " + Txfiled_SPCost_AddMO.getText() + " WHERE `MO_NBER` = " + Txfiled_MOnum_AddMO.getText() + ";";
 
-
+            
+            statement1.executeUpdate(sqlupdatePrice);
+            //JOptionPane.showMessageDialog(null, "تم تعديل سعر قطعة الغيار", "Alert", JOptionPane.INFORMATION_MESSAGE);
+            alert2.setContentText("تم تعديل سعر قطعة الغيار");
+            alert2.showAndWait();
         }
     }
 
@@ -186,6 +191,8 @@ public class Controller_AddMO implements Initializable {
 
     @FXML
     private void M_Btn_ReomveSP_AddMo(ActionEvent event) throws SQLException {
+           alert2.setTitle(null);
+        alert2.setHeaderText(null);
 
         AllSP2 = Table_SelectedSP_AddMO.getItems();
         SPSelected2 = Table_SelectedSP_AddMO.getSelectionModel().getSelectedItems();
@@ -204,27 +211,26 @@ public class Controller_AddMO implements Initializable {
             System.out.println(sqlDeletSP);
             //SPSelected2.get(i).ge
             String sqlupdateSP = "UPDATE `spare_parts` SET `SP_Quantity` = SP_Quantity+1 WHERE `spare_parts`.`SP_NBER` =" + SPSelected2.get(i).getSP2_Number();
-            
 
             System.out.println(sqlupdateSP);
             java.sql.Statement statement1 = connection.createStatement();
             statement1.executeUpdate(sqlDeletSP);
             statement1.executeUpdate(sqlupdateSP);
-            
-            JOptionPane.showMessageDialog(null,"تم ازالة  "+SPSelected2.get(0).getSP2_Name()+ "من عملية الصيانة", "Alert", JOptionPane.INFORMATION_MESSAGE);
 
-
+            //JOptionPane.showMessageDialog(null, "تم ازالة  " + SPSelected2.get(0).getSP2_Name() + "من عملية الصيانة", "Alert", JOptionPane.INFORMATION_MESSAGE);
+  alert2.setContentText("تم ازالة  " + SPSelected2.get(0).getSP2_Name() + "من عملية الصيانة");
+            alert2.showAndWait();
         }
         //loadData();
         //}
-        
+
         SPSelected2.forEach(loadlist::remove);
         Table_SelectedSP_AddMO.getItems().setAll(loadlist);
         loadData();
         calculate();
-         String sqlupdatePrice = "UPDATE `maintenance_operation` SET `MO_COST` = "+Txfiled_MOCost_AddMO.getText()+", `SP_COST` = "+Txfiled_SPCost_AddMO.getText()+" WHERE `MO_NBER` = "+Txfiled_MOnum_AddMO.getText()+";";
+        String sqlupdatePrice = "UPDATE `maintenance_operation` SET `MO_COST` = " + Txfiled_MOCost_AddMO.getText() + ", `SP_COST` = " + Txfiled_SPCost_AddMO.getText() + " WHERE `MO_NBER` = " + Txfiled_MOnum_AddMO.getText() + ";";
         java.sql.Statement statement1 = connection.createStatement();
-         statement1.executeUpdate(sqlupdatePrice);
+        statement1.executeUpdate(sqlupdatePrice);
         //DELETE FROM `require` WHERE `require`.`MO_NBER` = 7 AND `require`.`SP_NBER` = 3;
 
         // Txfiled_SPCost_AddMO.setText(String.valueOf(spcost));
@@ -306,12 +312,12 @@ public class Controller_AddMO implements Initializable {
                     String mobile = rs.getString("DESCRIPTION");
                     String price = rs.getString("PRICE");
 
-                int SP_num = Integer.parseInt(mname);
-                int SP_quan = Integer.parseInt(rs.getString("SP_QUANTITY"));
+                    int SP_num = Integer.parseInt(mname);
+                    int SP_quan = Integer.parseInt(rs.getString("SP_QUANTITY"));
 
-                double SP_Pri = Double.parseDouble(price);
+                    double SP_Pri = Double.parseDouble(price);
 
-                list.add(new Controller_AddMO.AddSP(SP_num, mid, mobile, SP_Pri,SP_quan));
+                    list.add(new Controller_AddMO.AddSP(SP_num, mid, mobile, SP_Pri, SP_quan));
 
                 }
 
@@ -342,7 +348,8 @@ public class Controller_AddMO implements Initializable {
 
     @FXML
     private void M_Btn_AddSP_AddMo(ActionEvent event) throws SQLException {
-
+   alert2.setTitle(null);
+        alert2.setHeaderText(null);
         ObservableList<Controller_AddMO.AddSP> SPSelected, AllSP;
         AllSP = Table_AddSP_AddMO.getItems();
         SPSelected = Table_AddSP_AddMO.getSelectionModel().getSelectedItems();
@@ -373,27 +380,30 @@ public class Controller_AddMO implements Initializable {
                 }
                 a++;
 
-            }if(SPSelected.get(0).getSP_Quantity()>0){
+            }
+            if (SPSelected.get(0).getSP_Quantity() > 0) {
 
-            loadlist.add(new Controller_AddMO.SelectedSP(SPSelected.get(0).getSP_Number(), SPSelected.get(0).getSP_Name(),
-                    SPSelected.get(0).getSP_Description(), SPSelected.get(0).getSP_Price(), "null", seqNumber));
-            //AllSP3.add()
+                loadlist.add(new Controller_AddMO.SelectedSP(SPSelected.get(0).getSP_Number(), SPSelected.get(0).getSP_Name(),
+                        SPSelected.get(0).getSP_Description(), SPSelected.get(0).getSP_Price(), "null", seqNumber));
+                //AllSP3.add()
 
-            String sql1 = "INSERT INTO `require` VALUES(" + Txfiled_MOnum_AddMO.getText() + ",'" + SPSelected.get(0).getSP_Number() + "','"
-                    + seqNumber + "','" + "Null'" + ",'" + SPSelected.get(0).getSP_Price() + "')";
-            System.out.println(sql1);
+                String sql1 = "INSERT INTO `require` VALUES(" + Txfiled_MOnum_AddMO.getText() + ",'" + SPSelected.get(0).getSP_Number() + "','"
+                        + seqNumber + "','" + "Null'" + ",'" + SPSelected.get(0).getSP_Price() + "')";
+                System.out.println(sql1);
 
-            String sqlupdateSP = "UPDATE `spare_parts` SET `SP_QUANTITY` = SP_Quantity-1 WHERE `spare_parts`.`SP_NBER` =" + SPSelected.get(0).getSP_Number();
-            System.out.println(sqlupdateSP);
+                String sqlupdateSP = "UPDATE `spare_parts` SET `SP_QUANTITY` = SP_Quantity-1 WHERE `spare_parts`.`SP_NBER` =" + SPSelected.get(0).getSP_Number();
+                System.out.println(sqlupdateSP);
 
-            java.sql.Statement statement1 = connection.createStatement();
-            statement1.executeUpdate(sql1);
-            statement1.executeUpdate(sqlupdateSP);
-            JOptionPane.showMessageDialog(null,"تم اضافة  "+SPSelected.get(0).getSP_Name()+ "لعملية الصيانة", "Alert", JOptionPane.INFORMATION_MESSAGE);
+                java.sql.Statement statement1 = connection.createStatement();
+                statement1.executeUpdate(sql1);
+                statement1.executeUpdate(sqlupdateSP);
+               // JOptionPane.showMessageDialog(null, "تم اضافة  " + SPSelected.get(0).getSP_Name() + "لعملية الصيانة", "Alert", JOptionPane.INFORMATION_MESSAGE);
+                  alert2.setContentText("تم اضافة  " + SPSelected.get(0).getSP_Name() + "لعملية الصيانة");
+            alert2.showAndWait();
 
-            loadData();
-            }else{
-                       JOptionPane.showMessageDialog(null, "Wrong !!! .", "Alert", JOptionPane.ERROR_MESSAGE);
+                loadData();
+            } else {
+                JOptionPane.showMessageDialog(null, "Wrong !!! .", "Alert", JOptionPane.ERROR_MESSAGE);
 
             }
 
@@ -402,9 +412,9 @@ public class Controller_AddMO implements Initializable {
         Table_SelectedSP_AddMO.getItems().setAll(loadlist);
 
         calculate();
-           String sqlupdatePrice = "UPDATE `maintenance_operation` SET `MO_COST` = "+Txfiled_MOCost_AddMO.getText()+", `SP_COST` = "+Txfiled_SPCost_AddMO.getText()+" WHERE `MO_NBER` = "+Txfiled_MOnum_AddMO.getText()+";";
+        String sqlupdatePrice = "UPDATE `maintenance_operation` SET `MO_COST` = " + Txfiled_MOCost_AddMO.getText() + ", `SP_COST` = " + Txfiled_SPCost_AddMO.getText() + " WHERE `MO_NBER` = " + Txfiled_MOnum_AddMO.getText() + ";";
         java.sql.Statement statement1 = connection.createStatement();
-         statement1.executeUpdate(sqlupdatePrice);
+        statement1.executeUpdate(sqlupdatePrice);
 
         // Txfiled_SPCost_AddMO.setText(String.valueOf(spcost));
         //SPSelected.forEach(AllSP::remove);
@@ -444,12 +454,23 @@ public class Controller_AddMO implements Initializable {
 
     @FXML
     private void M_Btn_Delete_AddMo(ActionEvent event) throws SQLException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Dialog");
+        alert.setHeaderText("تنبية!! ");
+        alert.setContentText("  سوف يتم حذف عملية الصيانة ");
 
-        String sql1 = "DELETE FROM  `maintenance_operation` " + " WHERE MO_NBER= " + Txfiled_MOnum_AddMO.getText();
-        System.out.println(sql1);
-        java.sql.Statement statement1 = connection.createStatement();
-        statement1.executeUpdate(sql1);
-        clear();
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            // ... user chose OK
+            String deletSP = "DELETE FROM  `require` " + " WHERE MO_NBER= " + Txfiled_MOnum_AddMO.getText();
+            String sql1 = "DELETE FROM  `maintenance_operation` " + " WHERE MO_NBER= " + Txfiled_MOnum_AddMO.getText();
+            System.out.println(deletSP);
+            System.out.println(sql1);
+            java.sql.Statement statement1 = connection.createStatement();
+            statement1.executeUpdate(deletSP);
+            statement1.executeUpdate(sql1);
+            clear();
+        }
 
     }
 
@@ -481,7 +502,8 @@ public class Controller_AddMO implements Initializable {
 
     @FXML
     private void M_Btn_Save_AddMo(ActionEvent event) throws SQLException {
-
+        alert2.setTitle(null);
+        alert2.setHeaderText(null);
         if (Txfiled_MOnum_AddMO.getText().isEmpty() || Txfiled_ProplemDisc_AddMO.getText().isEmpty() || Txfiled_CusMnum_AddMO.getText().isEmpty()
                 || Txfiled_DevSerialN_AddMO.getText().isEmpty() || Txfiled_DevDiscription_AddMO.getText().isEmpty() || Date_EndMO_AddMO.getValue() == null
                 || Date_StartMo_AddMO.getValue() == null || Date_Warranty_AddMO.getValue() == null || Selct_MoStatus_AddMO.getValue().isEmpty()
@@ -523,6 +545,8 @@ public class Controller_AddMO implements Initializable {
             java.sql.Statement statement1 = connection.createStatement();
             statement1.executeUpdate(sql1);
 
+            alert2.setContentText("تم انشاء عملية صيانة جديدة");
+            alert2.showAndWait();
         } else if (count == 2) {
             System.out.println("Equal  update");
             System.out.println(Selct_MoStatus_AddMO.getValue());
@@ -556,6 +580,8 @@ public class Controller_AddMO implements Initializable {
                 //System.out.println(Txfiled_MOnum_AddMO.getText());
             }
             //else if (mo state == problem){send mail}
+            alert2.setContentText("تم حفظ التعديلات بنجاح");
+            alert2.showAndWait();
         }
         count = 2;
 
@@ -701,7 +727,6 @@ public class Controller_AddMO implements Initializable {
         Col_SPdisc_AddSP_AddMO.setCellValueFactory(new PropertyValueFactory<>("SP_Description"));
         Col_SPprice_AddSP_AddMO.setCellValueFactory(new PropertyValueFactory<>("SP_Price"));
         Col_SPQuantity_AddSP_AddMO.setCellValueFactory(new PropertyValueFactory<>("SP_Quantity"));
-        
 
         Col_SPnum_SelectedSP_AddMO.setCellValueFactory(new PropertyValueFactory<>("SP_Number2"));
         Col_SPname_SelectedSP_AddMO.setCellValueFactory(new PropertyValueFactory<>("SP_Name2"));
@@ -711,13 +736,13 @@ public class Controller_AddMO implements Initializable {
     }
 
     private void loadData() {
-list.clear();
-Table_AddSP_AddMO.getItems().clear();
+        list.clear();
+        Table_AddSP_AddMO.getItems().clear();
         String query = "SELECT * FROM spare_parts";
         ResultSet rs = connectionClass.execQuery(query);
         try {
             while (rs.next()) {
-                
+
                 String mname = rs.getString("SP_NBER");
                 String mid = rs.getString("SP_NAME");
                 String mobile = rs.getString("DESCRIPTION");
@@ -728,7 +753,7 @@ Table_AddSP_AddMO.getItems().clear();
 
                 double SP_Pri = Double.parseDouble(price);
 
-                list.add(new Controller_AddMO.AddSP(SP_num, mid, mobile, SP_Pri,SP_quan));
+                list.add(new Controller_AddMO.AddSP(SP_num, mid, mobile, SP_Pri, SP_quan));
 
             }
             rs.close();
@@ -738,33 +763,31 @@ Table_AddSP_AddMO.getItems().clear();
 
         }
         Table_AddSP_AddMO.getItems().setAll(list);
-        for(int i=0; i<Table_AddSP_AddMO.getItems().size();i++){
-        if( Table_AddSP_AddMO.getItems().get(i).getSP_Quantity()<=0){
-            System.out.println("i am = 0");
-            
-          
-           // Table_AddSP_AddMO.getRowFactory().call(Table_AddSP_AddMO.getItems().get(i).getSP_Quantity()).setStyle("-fx-background-color: blue");
-           // Table_AddSP_AddMO.columnResizePolicyProperty().
-        // setTextFill(Color.BLACK);
-        //Table_AddSP_AddMO.setStyle(      "-fx-control-inner-background: red;"
-           // + "-fx-control-inner-background-alt: blue;");
-        //setStyle("-fx-background-color: yellow");
-            //Table_AddSP_AddMO.getStyleClass().clear();'Table_AddSP_AddMO,
-          //  Table_AddSP_AddMO.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-                                //Table_AddSP_AddMO.setStyle("-fx-background-color: yellow");
- 
-        }else{
-            Table_AddSP_AddMO.setStyle("-fx-my-cell-background: green");
+        for (int i = 0; i < Table_AddSP_AddMO.getItems().size(); i++) {
+            if (Table_AddSP_AddMO.getItems().get(i).getSP_Quantity() <= 0) {
+                System.out.println("i am = 0");
+
+                // Table_AddSP_AddMO.getRowFactory().call(Table_AddSP_AddMO.getItems().get(i).getSP_Quantity()).setStyle("-fx-background-color: blue");
+                // Table_AddSP_AddMO.columnResizePolicyProperty().
+                // setTextFill(Color.BLACK);
+                //Table_AddSP_AddMO.setStyle(      "-fx-control-inner-background: red;"
+                // + "-fx-control-inner-background-alt: blue;");
+                //setStyle("-fx-background-color: yellow");
+                //Table_AddSP_AddMO.getStyleClass().clear();'Table_AddSP_AddMO,
+                //  Table_AddSP_AddMO.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+                //Table_AddSP_AddMO.setStyle("-fx-background-color: yellow");
+            } else {
+                Table_AddSP_AddMO.setStyle("-fx-my-cell-background: green");
                 //  Table_AddSP_AddMO.setStyle(      "-fx-control-inner-background: white ;"
-           // + "-fx-control-inner-background-alt: green;");
- 
-                   }}
-    //-fx-cell-size: 50px;
+                // + "-fx-control-inner-background-alt: green;");
+
+            }
+        }
+        //-fx-cell-size: 50px;
 //row-selection
         //-fx-background-color
-        
+
         //Table_AddSP_AddMO.getItems().get(0).getSP_Quantity()
-        
     }
 
     private void loadSpSelected() throws SQLException {
@@ -870,18 +893,23 @@ Table_AddSP_AddMO.getItems().clear();
                 System.out.println("pr= " + i + "  " + mypriceArray[i]);
                 Txfiled_SPCost_AddMO.setText(String.valueOf(spcost));
             }
-        }else{
-        
-        Txfiled_SPCost_AddMO.setText(String.valueOf(0.00));
+        } else {
+
+            Txfiled_SPCost_AddMO.setText(String.valueOf(0.00));
         }
 
         double costofmaint = Double.parseDouble(Txfiled_MOCost_AddMO.getText());
         double costofSP = spcost;
         double total = costofmaint + costofSP;
         double vat = total * 0.05;
+       
+        
         System.out.println("VAT== " + vat);
+               System.out.printf("%.2f", vat);
+               String saa = String.format("%.2f", vat);
+
         double Total = total + vat;
-        Txfiled_VAT_AddMO.setText(String.valueOf(vat));
+        Txfiled_VAT_AddMO.setText(String.valueOf(saa));
         Txfiled_TotalCost_AddMO.setText(String.valueOf(Total));
 
     }
