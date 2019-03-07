@@ -21,6 +21,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javax.swing.JOptionPane;
 
 public class Controller_Login {
 
@@ -106,6 +107,12 @@ public class Controller_Login {
 
     @FXML
     private void M_Btn_Login_LOGIN(ActionEvent event) throws SQLException {
+        
+        
+        if (Txfiled_UserID_Login.getText().isEmpty()==true) {
+            //JOptionPane.showMessageDialog(null ,"Welcomjjjjjjjjj" , "subject" , JOptionPane.ERROR_MESSAGE);  
+            JOptionPane.showMessageDialog(null, "Wrong !!!", "Alert", JOptionPane.ERROR_MESSAGE);
+        } else {
 
         Statement st3 = connection.createStatement();
         String Query = "SELECT * FROM `employee` WHERE EMPLOYEE_ID=" + Txfiled_UserID_Login.getText();
@@ -137,17 +144,20 @@ public class Controller_Login {
                 }
                 Controller controller = loader.getController();
                 //edit here 
-               
+   
 
                 Parent parent = loader.getRoot();
                 Stage stage = new Stage();
                 stage.setScene(new Scene(parent));
                 stage.showAndWait();
 
+            } else {
+                //JOptionPane.showMessageDialog(null,"Hello, Welcome to Javatpoint.");  
+               // JOptionPane.showMessageDialog(null, "Successfully Updated.", "Alert", JOptionPane.WARNING_MESSAGE);
+           JOptionPane.showMessageDialog(null, "Wrong !!! .", "Alert", JOptionPane.ERROR_MESSAGE);
             }
         }
-
-    }
+    }}
 
     @FXML
     private void M_Btn_Cancle_Login(ActionEvent event) {

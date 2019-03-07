@@ -45,6 +45,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.converter.DoubleStringConverter;
+import javax.swing.JOptionPane;
 
 public class Controller_AddMO implements Initializable {
 
@@ -163,6 +164,11 @@ public class Controller_AddMO implements Initializable {
             calculate();
             Txfiled_SpSerialN_AddMO.setText("الرقم التسلسلي");
             Txfiled_SpPrice_AddMO.setText("السعر");
+               String sqlupdatePrice = "UPDATE `maintenance_operation` SET `MO_COST` = "+Txfiled_MOCost_AddMO.getText()+", `SP_COST` = "+Txfiled_SPCost_AddMO.getText()+" WHERE `MO_NBER` = "+Txfiled_MOnum_AddMO.getText()+";";
+       
+         statement1.executeUpdate(sqlupdatePrice);
+         JOptionPane.showMessageDialog(null,"تم تعديل سعر قطعة الغيار", "Alert", JOptionPane.INFORMATION_MESSAGE);
+
 
         }
     }
@@ -198,17 +204,27 @@ public class Controller_AddMO implements Initializable {
             System.out.println(sqlDeletSP);
             //SPSelected2.get(i).ge
             String sqlupdateSP = "UPDATE `spare_parts` SET `SP_Quantity` = SP_Quantity+1 WHERE `spare_parts`.`SP_NBER` =" + SPSelected2.get(i).getSP2_Number();
+            
+
             System.out.println(sqlupdateSP);
             java.sql.Statement statement1 = connection.createStatement();
             statement1.executeUpdate(sqlDeletSP);
             statement1.executeUpdate(sqlupdateSP);
+            
+            JOptionPane.showMessageDialog(null,"تم ازالة  "+SPSelected2.get(0).getSP2_Name()+ "من عملية الصيانة", "Alert", JOptionPane.INFORMATION_MESSAGE);
+
 
         }
+        //loadData();
         //}
+        
         SPSelected2.forEach(loadlist::remove);
         Table_SelectedSP_AddMO.getItems().setAll(loadlist);
-
+        loadData();
         calculate();
+         String sqlupdatePrice = "UPDATE `maintenance_operation` SET `MO_COST` = "+Txfiled_MOCost_AddMO.getText()+", `SP_COST` = "+Txfiled_SPCost_AddMO.getText()+" WHERE `MO_NBER` = "+Txfiled_MOnum_AddMO.getText()+";";
+        java.sql.Statement statement1 = connection.createStatement();
+         statement1.executeUpdate(sqlupdatePrice);
         //DELETE FROM `require` WHERE `require`.`MO_NBER` = 7 AND `require`.`SP_NBER` = 3;
 
         // Txfiled_SPCost_AddMO.setText(String.valueOf(spcost));
@@ -357,7 +373,7 @@ public class Controller_AddMO implements Initializable {
                 }
                 a++;
 
-            }
+            }if(SPSelected.get(0).getSP_Quantity()>0){
 
             loadlist.add(new Controller_AddMO.SelectedSP(SPSelected.get(0).getSP_Number(), SPSelected.get(0).getSP_Name(),
                     SPSelected.get(0).getSP_Description(), SPSelected.get(0).getSP_Price(), "null", seqNumber));
@@ -373,13 +389,22 @@ public class Controller_AddMO implements Initializable {
             java.sql.Statement statement1 = connection.createStatement();
             statement1.executeUpdate(sql1);
             statement1.executeUpdate(sqlupdateSP);
+            JOptionPane.showMessageDialog(null,"تم اضافة  "+SPSelected.get(0).getSP_Name()+ "لعملية الصيانة", "Alert", JOptionPane.INFORMATION_MESSAGE);
+
             loadData();
+            }else{
+                       JOptionPane.showMessageDialog(null, "Wrong !!! .", "Alert", JOptionPane.ERROR_MESSAGE);
+
+            }
 
         }
         //}
         Table_SelectedSP_AddMO.getItems().setAll(loadlist);
 
         calculate();
+           String sqlupdatePrice = "UPDATE `maintenance_operation` SET `MO_COST` = "+Txfiled_MOCost_AddMO.getText()+", `SP_COST` = "+Txfiled_SPCost_AddMO.getText()+" WHERE `MO_NBER` = "+Txfiled_MOnum_AddMO.getText()+";";
+        java.sql.Statement statement1 = connection.createStatement();
+         statement1.executeUpdate(sqlupdatePrice);
 
         // Txfiled_SPCost_AddMO.setText(String.valueOf(spcost));
         //SPSelected.forEach(AllSP::remove);
@@ -845,6 +870,9 @@ Table_AddSP_AddMO.getItems().clear();
                 System.out.println("pr= " + i + "  " + mypriceArray[i]);
                 Txfiled_SPCost_AddMO.setText(String.valueOf(spcost));
             }
+        }else{
+        
+        Txfiled_SPCost_AddMO.setText(String.valueOf(0.00));
         }
 
         double costofmaint = Double.parseDouble(Txfiled_MOCost_AddMO.getText());
